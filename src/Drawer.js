@@ -6,7 +6,8 @@ export default class Drawer extends StateObject {
 
     this.canvas = null;
     this.state = {
-      isCanvasCreated: false
+      isCanvasCreated: false,
+      result: ''
     }
   }
 
@@ -19,15 +20,19 @@ export default class Drawer extends StateObject {
       switch (command) {
         case 'C':
           this.createCanvas(...args);
+          this.updateResult();
           return;
         case 'L':
           this.drawLine(...args);
+          this.updateResult();
           return;
         case 'R':
           this.drawRectangle(...args);
+          this.updateResult();
           return;
         case 'B':
           this.bucketFilling(...args);
+          this.updateResult();
           return;
         default:
           throw new Error('Command not found!');
@@ -35,9 +40,20 @@ export default class Drawer extends StateObject {
     });
   }
 
+  checkArguments(args, command, description) {    
+    args.forEach(arg => {
+      if (typeof +arg !== 'number' || isNaN(+arg) || +arg < 0) {
+        throw new Error(`Invalid arguments for command '${command}' - ${description}!`);
+      }
+    });
+  }
+
   createCanvas = (widthString, heightString) => {
+    this.checkArguments([widthString, heightString], 'C', 'create canvas');
+
     const height = +heightString;
     const width = +widthString;
+
     let line = Array(width + 2).fill(' ');
     line[0] = '|';
     line[line.length - 1] = '|';
@@ -64,6 +80,8 @@ export default class Drawer extends StateObject {
   }
 
   drawLine = (x1Str, y1Str, x2Str, y2Str) => { 
+    this.checkArguments([x1Str, y1Str, x2Str, y2Str], 'D', 'draw line');
+
     const x1 = +x1Str;
     const y1 = +y1Str;
     const x2 = +x2Str;
@@ -95,6 +113,8 @@ export default class Drawer extends StateObject {
   }
 
   drawRectangle = (x1, y1, x2, y2) => {
+    this.checkArguments([x1, y1, x2, y2], 'D', 'draw rectangle');
+
     if (this.isOutOfRange(x1, y1) || this.isOutOfRange(x2, y2)) {
       throw new Error('Out of range!');
     }
@@ -109,9 +129,13 @@ export default class Drawer extends StateObject {
 
   }
 
+  updateResult() {
+    this.state.result += this.canvas.matrix.map(line => line.join('')).join('\n') + '\n'; 
+  }
+
   getResult = () => {
     if (this.canvas) {
-      return this.canvas.matrix.map(line => line.join('')).join('\n'); 
+      return this.state.result; //this.canvas.matrix.map(line => line.join('')).join('\n'); 
     } 
 
     throw new Error('No result to return!');

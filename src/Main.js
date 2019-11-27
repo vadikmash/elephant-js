@@ -20,7 +20,7 @@ const Main = () => {
   const processFile = (event) => {
     setErrorMessage('');
     try {
-      scriptManager.loadFromFile(event.target.files[0]);
+      scriptManager.loadFromFile(event.target.files[0], setErrorMessage);
 
       const path = fileInput.current.value;
       setFileUri(path);

@@ -4,7 +4,7 @@ import Drawer from './Drawer';
 export default class ScriptManager extends StateObject {
   constructor () {
     super(); 
-    
+
     this.state = {
       script: '',
       result: ''
@@ -13,13 +13,17 @@ export default class ScriptManager extends StateObject {
     this.drawer = new Drawer();
   }
 
-  loadFromFile (file) {
+  loadFromFile (file, setErrorMessage) {
     const reader = new FileReader();
     reader.onloadend = (e) => {
       if (e.target.readyState === FileReader.DONE) {
         this.setState({ script: e.target.result});
 
-        this.execute();
+        try {
+          this.execute();
+        } catch (error) {
+          setErrorMessage && setErrorMessage(error.message);
+        }   
       } else {
         throw new Error('A problem occured while reading file.');
       }
@@ -31,7 +35,11 @@ export default class ScriptManager extends StateObject {
     const { script } = this.state;
 
     if (script) {
+      try {
       this.drawer.execute(script);
+    } catch (error) {
+      throw error
+        }   
 
       return;
     } 
