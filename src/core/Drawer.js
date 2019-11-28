@@ -15,7 +15,7 @@ export default class Drawer extends StateObject {
     const lines = script.trim().split('\n');
 
     lines.forEach(line => {
-      const [command, ...args] = line.split(' ');
+      const [command, ...args] = line.split(' ').filter(arg => arg);
 
       if (command) {
         if (command === 'C') {
@@ -54,10 +54,10 @@ export default class Drawer extends StateObject {
     });
   }
 
-  checkArguments(args, command, description) {    
+  checkArguments(args, command, description) {   
     args.forEach(arg => {
-      if (typeof +arg !== 'number' || isNaN(+arg) || +arg < 0) {
-        throw new Error(`Invalid arguments for command '${command}' - ${description}!`);
+      if (typeof +arg !== 'number' || isNaN(+arg) || +arg < 0 || !Number.isInteger(+arg)) {
+        throw new Error(`Invalid arguments (${args}) for command '${command}' - ${description}!`);
       }
     });
   }
@@ -86,7 +86,7 @@ export default class Drawer extends StateObject {
   isOutOfRange = (x, y) => {
     const { width, height } = this.canvas;
 
-    if (x < 0 || y < 0 || x > width || y > height) {
+    if (+x < 0 || +y < 0 || +x > width || +y > height) {
       return true;
     }
 
@@ -141,18 +141,21 @@ export default class Drawer extends StateObject {
     this.drawLine(x2, y2, x2, y1);
   }
 
-  bucketFilling = (xFirst, yFirst, filling) => {    
+  bucketFilling = (xFirstStr, yFirstStr, filling) => {    
     const { isOutOfRange } = this;
 
-    this.checkArguments([xFirst, yFirst], 'B', 'paint bucket');
+    this.checkArguments([xFirstStr, yFirstStr], 'B', 'paint bucket');
 
-    if (isOutOfRange(xFirst, yFirst)) {
+    if (isOutOfRange(xFirstStr, yFirstStr)) {
       throw new Error('Out of range!');
     }
 
     if (!filling) {
       throw new Error('No filling argument provided!');
     }
+
+    const xFirst = +xFirstStr;
+    const yFirst = +yFirstStr;
 
     filling = filling[0];
 
@@ -195,7 +198,7 @@ export default class Drawer extends StateObject {
 
   getResult = () => {
     if (this.canvas) {
-      return this.state.result; //this.canvas.matrix.map(line => line.join('')).join('\n'); 
+      return this.state.result;
     } 
 
     throw new Error('No result to return!');

@@ -12,6 +12,9 @@ export default class ScriptManager extends StateObject {
   }
 
   loadFromFile (file, setErrorMessage) {
+    if (!file) {
+      return;
+    }
     const reader = new FileReader();
     reader.onloadend = (e) => {
       if (e.target.readyState === FileReader.DONE) {

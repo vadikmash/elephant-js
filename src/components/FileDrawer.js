@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Buttton from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
-import SctiptManager from '../ScriptManager';
+import SctiptManager from '../core/ScriptManager';
 
 
 const FileDrawer = () => {

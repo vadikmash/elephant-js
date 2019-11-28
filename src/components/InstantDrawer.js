@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import SctiptManager from '../ScriptManager';
+import SctiptManager from '../core/ScriptManager';
 
 const defaultScript = `C 20 4
 L 1 2 6 2
@@ -27,25 +27,22 @@ const InstantDrawer = () => {
   }
 
   return (
-    <>
-      <h2>Or just try it below</h2>
-      <div 
-        className={classes.main}
+    <div 
+      className={classes.main}
+    >
+      <textarea
+        className={classes.textarea}
+        onChange={processScript}
+        autoFocus
+        defaultValue={defaultScript}
+      ></textarea>
+      <textarea
+        className={classes.output}
+        readOnly
+        value={result}
       >
-        <textarea
-          className={classes.textarea}
-          onChange={processScript}
-          autoFocus
-          defaultValue={defaultScript}
-        ></textarea>
-        <textarea
-          className={classes.output}
-          readOnly
-          value={result}
-        >
-        </textarea>
-      </div>
-    </>
+      </textarea>
+    </div>
   );
 }
 
@@ -75,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     margin: '10px',
     padding: '10px',
     fontSize: '3vh',
-    lineHeight: '2.5vh',
+    lineHeight: '2.7vh',
     fontFamily: 'Courier'
   }
 }));
