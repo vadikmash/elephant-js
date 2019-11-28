@@ -9,8 +9,6 @@ export default class ScriptManager extends StateObject {
       script: '',
       result: ''
     }
-
-    this.drawer = new Drawer();
   }
 
   loadFromFile (file, setErrorMessage) {
@@ -20,7 +18,7 @@ export default class ScriptManager extends StateObject {
         this.setState({ script: e.target.result});
 
         try {
-          this.execute();
+          this.execute(this.state.script);
         } catch (error) {
           setErrorMessage && setErrorMessage(error.message);
         }   
@@ -31,15 +29,19 @@ export default class ScriptManager extends StateObject {
     reader.readAsBinaryString(file);
   }
 
-  execute = () => {
-    const { script } = this.state;
+  execute = (script) => {
+    const drawer = new Drawer();
 
     if (script) {
       try {
-      this.drawer.execute(script);
-    } catch (error) {
-      throw error
-        }   
+        drawer.execute(script);
+
+        const result = drawer.getResult();
+
+        this.setState({ result });
+      } catch (error) {
+        throw error
+      }   
 
       return;
     } 
@@ -48,14 +50,16 @@ export default class ScriptManager extends StateObject {
   }
 
   getResult = () => {
-    return this.drawer.getResult();
+    return this.state.result;
   }
 
   downloadResult = () => {
     const result = this.getResult();
 
-    console.log(result);
-
-    // do smth
+    const link = document.createElement('a');
+    link.download = 'drawing.txt';
+    const blob = new Blob([result], { type: 'text/plain' });
+    link.href = window.URL.createObjectURL(blob);
+    link.click();
   }
 }

@@ -12,30 +12,44 @@ export default class Drawer extends StateObject {
   }
 
   execute = (script) => {
-    const lines = script.split('\n');
+    const lines = script.trim().split('\n');
 
     lines.forEach(line => {
       const [command, ...args] = line.split(' ');
 
-      switch (command) {
-        case 'C':
-          this.createCanvas(...args);
-          this.updateResult();
-          return;
-        case 'L':
-          this.drawLine(...args);
-          this.updateResult();
-          return;
-        case 'R':
-          this.drawRectangle(...args);
-          this.updateResult();
-          return;
-        case 'B':
-          this.bucketFilling(...args);
-          this.updateResult();
-          return;
-        default:
-          throw new Error('Command not found!');
+      if (command) {
+        if (command === 'C') {
+          if(!this.canvas) {
+            this.createCanvas(...args);
+          } else {
+            throw new Error('Canvas has already been created!');
+          }
+        } else {
+          if (!this.canvas) {
+            throw new Error(
+              `Cannot execute command ${command}. 
+              Create canvas (use 'C' command) before drawing!`
+            );
+          }
+        }
+
+        switch (command) {
+          case 'C':
+            break;
+          case 'L':
+            this.drawLine(...args);
+            break;
+          case 'R':
+            this.drawRectangle(...args);
+            break;
+          case 'B':
+            this.bucketFilling(...args);
+            break;
+          default:
+            throw new Error(`Command '${command}' was not found!`);
+        }
+
+        this.updateResult();
       }
     });
   }
@@ -57,7 +71,7 @@ export default class Drawer extends StateObject {
     let line = Array(width + 2).fill(' ');
     line[0] = '|';
     line[line.length - 1] = '|';
-    let topBottomLine = Array(width).fill('-');
+    let topBottomLine = Array(width + 2).fill('-');
     const matrix = new Array(height + 2).fill().map(() => [...line]);
     matrix[0] = topBottomLine;
     matrix[matrix.length - 1] = topBottomLine;
@@ -80,7 +94,7 @@ export default class Drawer extends StateObject {
   }
 
   drawLine = (x1Str, y1Str, x2Str, y2Str) => { 
-    this.checkArguments([x1Str, y1Str, x2Str, y2Str], 'D', 'draw line');
+    this.checkArguments([x1Str, y1Str, x2Str, y2Str], 'L', 'draw line');
 
     const x1 = +x1Str;
     const y1 = +y1Str;
@@ -110,10 +124,12 @@ export default class Drawer extends StateObject {
 
       return;
     }
+
+    throw new Error('Only vertical and horisintal lines are allowed!')
   }
 
   drawRectangle = (x1, y1, x2, y2) => {
-    this.checkArguments([x1, y1, x2, y2], 'D', 'draw rectangle');
+    this.checkArguments([x1, y1, x2, y2], 'R', 'draw rectangle');
 
     if (this.isOutOfRange(x1, y1) || this.isOutOfRange(x2, y2)) {
       throw new Error('Out of range!');
@@ -125,8 +141,52 @@ export default class Drawer extends StateObject {
     this.drawLine(x2, y2, x2, y1);
   }
 
-  bucketFilling = (x, y, filling) => {
+  bucketFilling = (xFirst, yFirst, filling) => {    
+    const { isOutOfRange } = this;
 
+    this.checkArguments([xFirst, yFirst], 'B', 'paint bucket');
+
+    if (isOutOfRange(xFirst, yFirst)) {
+      throw new Error('Out of range!');
+    }
+
+    if (!filling) {
+      throw new Error('No filling argument provided!');
+    }
+
+    filling = filling[0];
+
+
+    // recursive filling algorithm
+    const fill = (x, y, initialFilling) => {
+      if (!isOutOfRange(x, y) && initialFilling !== this.canvas.matrix[y][x]) {
+        // top
+        if (!isOutOfRange(x, y - 1) && this.canvas.matrix[y - 1][x] === initialFilling) {
+          this.canvas.matrix[y - 1][x] = filling;
+          fill(x, y - 1, initialFilling);
+        }
+        // right
+        if (!isOutOfRange(x + 1, y) && this.canvas.matrix[y][x + 1] === initialFilling) {
+          this.canvas.matrix[y][x + 1] = filling;
+          fill(x + 1, y, initialFilling);
+        }
+        // bottom
+        if (!isOutOfRange(x, y + 1) && this.canvas.matrix[y + 1][x] === initialFilling) {
+          this.canvas.matrix[y + 1][x] = filling;
+          fill(x, y + 1, initialFilling);
+        }
+        // left
+        if (!isOutOfRange(x - 1, y) && this.canvas.matrix[y][x - 1] === initialFilling) {
+          this.canvas.matrix[y][x - 1] = filling;
+          fill(x - 1, y, initialFilling);
+        }
+      }
+    }
+
+    const initialFilling = this.canvas.matrix[yFirst][xFirst];
+    this.canvas.matrix[yFirst][xFirst] = filling;
+
+    fill(xFirst, yFirst, initialFilling);
   }
 
   updateResult() {

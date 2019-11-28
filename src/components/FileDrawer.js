@@ -2,10 +2,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import Buttton from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
-import SctiptManager from './ScriptManager';
+import SctiptManager from '../ScriptManager';
 
 
-const Main = () => {
+const FileDrawer = () => {
   const classes = useStyles();
   const fileInput = useRef();
   const [fileUri, setFileUri] = useState('');
@@ -59,7 +59,7 @@ const Main = () => {
             color="primary"
             onClick={chooseFile}
           >
-            Upload File
+            Upload Script
           </Buttton>
           <Buttton
             className={classes.button}
@@ -82,12 +82,12 @@ const Main = () => {
 }
 
 
-export default Main;
+export default FileDrawer;
 
 
 const useStyles = makeStyles(theme => ({
   main: {
-    height: '100vh',
+    height: '10vh',
     width: '100vw',
     display: 'flex',
     justifyContent: 'center',
