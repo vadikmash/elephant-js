@@ -35,7 +35,7 @@ export default class ScriptManager extends StateObject {
   execute = (script) => {
     const drawer = new Drawer();
 
-    if (script) {
+    if (script.trim()) {
       try {
         drawer.execute(script);
 
@@ -59,10 +59,16 @@ export default class ScriptManager extends StateObject {
   downloadResult = () => {
     const result = this.getResult();
 
-    const link = document.createElement('a');
-    link.download = 'drawing.txt';
-    const blob = new Blob([result], { type: 'text/plain' });
-    link.href = window.URL.createObjectURL(blob);
-    link.click();
+    if (result) {
+      const link = document.createElement('a');
+      link.download = 'drawing.txt';
+      const blob = new Blob([result], { type: 'text/plain' });
+      link.href = window.URL.createObjectURL(blob);
+      link.click();
+
+      return;
+    }
+
+    throw new Error('No resault to download');
   }
 }

@@ -56,8 +56,8 @@ export default class Drawer extends StateObject {
 
   checkArguments(args, command, description) {   
     args.forEach(arg => {
-      if (typeof +arg !== 'number' || isNaN(+arg) || +arg < 0 || !Number.isInteger(+arg)) {
-        throw new Error(`Invalid arguments (${args}) for command '${command}' - ${description}!`);
+      if (!Number.isInteger(+arg)) {
+        throw new Error(`Invalid arguments (${args.join(', ')}) for command '${command}' - ${description}!`);
       }
     });
   }
@@ -86,7 +86,7 @@ export default class Drawer extends StateObject {
   isOutOfRange = (x, y) => {
     const { width, height } = this.canvas;
 
-    if (+x < 0 || +y < 0 || +x > width || +y > height) {
+    if (+x <=0 || +y <= 0 || +x > width || +y > height) {
       return true;
     }
 

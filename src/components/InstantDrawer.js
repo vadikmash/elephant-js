@@ -9,11 +9,13 @@ L 6 3 6 4
 R 16 1 20 3
 B 10 3 o`;
 
+const defaultMessage = 'The result is gonna be shown here';
+
 
 const InstantDrawer = () => {
   const classes = useStyles();
   const [scriptManager, setScriptManager] = useState(null);
-  const [result, setResult] = useState('The result is gonna be shown here');
+  const [result, setResult] = useState(defaultMessage);
   useEffect(() => setScriptManager(new SctiptManager()), []);
 
   const processScript = (event) => {
@@ -39,7 +41,7 @@ const InstantDrawer = () => {
       <textarea
         className={classes.output}
         readOnly
-        value={result}
+        value={result || defaultMessage}
       >
       </textarea>
     </div>
