@@ -73,10 +73,10 @@ export default class Drawer extends StateObject {
       throw new Error(`Canvas can't be bigger than ${MAX_CANVAS_SIZE}x${MAX_CANVAS_SIZE}!`);
     }
 
-    let line = Array(width + 2).fill(' ');
+    const line = Array(width + 2).fill(' ');
     line[0] = '|';
     line[line.length - 1] = '|';
-    let topBottomLine = Array(width + 2).fill('-');
+    const topBottomLine = Array(width + 2).fill('-');
     const matrix = new Array(height + 2).fill().map(() => [...line]);
     matrix[0] = topBottomLine;
     matrix[matrix.length - 1] = topBottomLine;
