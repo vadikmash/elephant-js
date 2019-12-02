@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "89faee1f57339eb6d964e587cb871cf7",
+    "revision": "faa28d72afbc5aed90601e972046bdca",
     "url": "/elephant-js/index.html"
   },
   {
-    "revision": "2a873d65b0f5888fcd09",
+    "revision": "f1990fce7c6006d60908",
     "url": "/elephant-js/static/css/main.34de6062.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/elephant-js/static/js/2.f5ce9da2.chunk.js"
   },
   {
-    "revision": "2a873d65b0f5888fcd09",
-    "url": "/elephant-js/static/js/main.f69729bc.chunk.js"
+    "revision": "f1990fce7c6006d60908",
+    "url": "/elephant-js/static/js/main.fd02b76e.chunk.js"
   },
   {
     "revision": "6f49dd934cc7d79d217f",
