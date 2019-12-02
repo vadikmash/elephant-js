@@ -1,5 +1,6 @@
 import StateObject from "./StateObject";
 
+const MAX_CANVAS_SIZE = 50;
 export default class Drawer extends StateObject {
   constructor () {
     super();
@@ -67,6 +68,10 @@ export default class Drawer extends StateObject {
 
     const height = +heightString;
     const width = +widthString;
+
+    if (height > MAX_CANVAS_SIZE || width > MAX_CANVAS_SIZE) {
+      throw new Error(`Canvas can't be bigger than ${MAX_CANVAS_SIZE}x${MAX_CANVAS_SIZE}!`);
+    }
 
     let line = Array(width + 2).fill(' ');
     line[0] = '|';
